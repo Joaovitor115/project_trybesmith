@@ -1,4 +1,5 @@
 const express = require('express');
+const { readFile } = require('./talkerFunctions');
 
 const app = express();
 
@@ -14,4 +15,13 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+
+app.get('/talker', async (_req, res) => {
+const data = await readFile();
+if (!data) {
+  return res.status(200).json([]);
+}
+console.log(data, 'data');
+return res.status(200).json(data);
 });
