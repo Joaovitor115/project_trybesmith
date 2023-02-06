@@ -18,8 +18,20 @@ function token(length) {
   }
   return result;
 }
-
+const write = async (body) => {
+  const data = await readFile();
+  const newData = {
+    id: data[data.length - 1].id + 1,
+    ...body,
+  };
+  const allData = JSON.stringify([
+    ...data, newData,
+  ]);
+  await fs.writeFile(talkerPath, allData);
+  return newData;
+};
 module.exports = {
   readFile,
   token,
+  write,
 };

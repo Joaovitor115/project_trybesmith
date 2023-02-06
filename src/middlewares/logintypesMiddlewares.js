@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-  const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+  const emailRegex = /\S+@\S+\.\S+/;
   const { email, password } = req.body;
 
   if (password.length < 6) {
@@ -12,5 +12,5 @@ module.exports = (req, res, next) => {
       message: 'O "email" deve ter o formato "email@email.com"',
     });
   }
-  next();
+  return next();
 };

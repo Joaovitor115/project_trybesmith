@@ -1,7 +1,13 @@
 const express = require('express');
+const ageValidation = require('./middlewares/ageValidation');
 const loginMiddlewares = require('./middlewares/loginMiddlewares');
 const logintypesMiddlewares = require('./middlewares/logintypesMiddlewares');
-const { readFile, token } = require('./talkerFunctions');
+const nameValidation = require('./middlewares/nameValidation');
+const rateValidation = require('./middlewares/rateValidation');
+const talkValidation = require('./middlewares/talkValidation');
+const tokenValidation = require('./middlewares/tokenValidation');
+const watchedAtValidation = require('./middlewares/watchedAtValidation');
+const { readFile, token, write } = require('./talkerFunctions');
 
 const app = express();
 
@@ -40,13 +46,20 @@ app.get('/talker/:id', async (req, res) => {
 });
 
 app.post('/login', loginMiddlewares, logintypesMiddlewares, async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'faltando email ou password',
-    });
-  }
-  return res.status(200).json({
+  res.status(200).json({
     token: token(16),
   });
 });
+
+app.post('/talker',
+  tokenValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation,
+  async (req, res) => {
+    const data = req.body;
+   const result = await write(data);
+    return res.status(201).json(result);
+  });
