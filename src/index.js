@@ -1,4 +1,6 @@
 const express = require('express');
+const loginMiddlewares = require('./middlewares/loginMiddlewares');
+const logintypesMiddlewares = require('./middlewares/logintypesMiddlewares');
 const { readFile, token } = require('./talkerFunctions');
 
 const app = express();
@@ -37,7 +39,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(FoundUser);
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', loginMiddlewares, logintypesMiddlewares, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({
