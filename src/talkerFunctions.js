@@ -30,8 +30,15 @@ const write = async (body) => {
   await fs.writeFile(talkerPath, allData);
   return newData;
 };
+const deleteFile = async (id) => {
+  const data = await readFile();
+  const newData = data.filter((a) => a.id !== Number(id));
+  const allData = JSON.stringify(newData);
+  await fs.writeFile(talkerPath, allData);
+};
 module.exports = {
   readFile,
   token,
   write,
+  deleteFile,
 };

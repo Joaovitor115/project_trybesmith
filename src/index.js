@@ -7,7 +7,7 @@ const rateValidation = require('./middlewares/rateValidation');
 const talkValidation = require('./middlewares/talkValidation');
 const tokenValidation = require('./middlewares/tokenValidation');
 const watchedAtValidation = require('./middlewares/watchedAtValidation');
-const { readFile, token, write } = require('./talkerFunctions');
+const { readFile, token, write, deleteFile } = require('./talkerFunctions');
 
 const app = express();
 
@@ -20,7 +20,6 @@ const PORT = '3000';
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
-
 app.listen(PORT, () => {
   console.log('Online');
 });
@@ -60,6 +59,30 @@ app.post('/talker',
   rateValidation,
   async (req, res) => {
     const data = req.body;
-   const result = await write(data);
+    const result = await write(data);
     return res.status(201).json(result);
   });
+
+// app.put('/talker/:id',
+//   tokenValidation,
+//   nameValidation,
+//   ageValidation,
+//   talkValidation,
+//   watchedAtValidation,
+//   rateValidation,
+//   async (req, res) => {
+//     const { id } = req.params;
+//     const data = req.body;
+//     const talkers = await readFile();
+//     const newData = talkers.map((a) => {
+//       if (a.id !== Number(id)) return a;
+//       return { ...a, ...data };
+//     });
+//     JSON.stringify(newData);
+//     fs.writeFile(talkerPath, newData);
+//   });
+app.delete('/talker/:id', tokenValidation, async (req, res) => {
+  const { id } = req.params;
+  await deleteFile(id);
+  return res.status(204).json('');
+});
