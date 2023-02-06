@@ -7,7 +7,7 @@ const rateValidation = require('./middlewares/rateValidation');
 const talkValidation = require('./middlewares/talkValidation');
 const tokenValidation = require('./middlewares/tokenValidation');
 const watchedAtValidation = require('./middlewares/watchedAtValidation');
-const { readFile, token, write, deleteFile } = require('./talkerFunctions');
+const { readFile, token, write, deleteFile, FindByQuery } = require('./talkerFunctions');
 
 const app = express();
 
@@ -30,18 +30,6 @@ app.get('/talker', async (_req, res) => {
     return res.status(200).json([]);
   }
   return res.status(200).json(data);
-});
-
-app.get('/talker/:id', async (req, res) => {
-  const data = await readFile();
-  const { id } = req.params;
-  const FoundUser = data.find((u) => u.id === Number(id));
-  if (!FoundUser) {
-    return res.status(404).json({
-      message: 'Pessoa palestrante não encontrada',
-    });
-  }
-  return res.status(200).json(FoundUser);
 });
 
 app.post('/login', loginMiddlewares, logintypesMiddlewares, async (req, res) => {
@@ -85,4 +73,19 @@ app.delete('/talker/:id', tokenValidation, async (req, res) => {
   const { id } = req.params;
   await deleteFile(id);
   return res.status(204).json('');
+});
+app.get('/talker/search', tokenValidation, async (req, res) => {
+const result = await FindByQuery(req.query.q);
+res.status(200).json(result);
+});
+app.get('/talker/:id', async (req, res) => {
+  const data = await readFile();
+  const { id } = req.params;
+  const FoundUser = data.find((u) => u.id === Number(id));
+  if (!FoundUser) {
+    return res.status(404).json({
+      message: 'Pessoa palestrante não encontrada',
+    });
+  }
+  return res.status(200).json(FoundUser);
 });

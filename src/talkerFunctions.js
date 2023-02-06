@@ -36,9 +36,15 @@ const deleteFile = async (id) => {
   const allData = JSON.stringify(newData);
   await fs.writeFile(talkerPath, allData);
 };
+const FindByQuery = async (query) => {
+const data = await readFile();
+const talkers = data.filter((talker) => talker.name.includes(query));
+return talkers;
+};
 module.exports = {
   readFile,
   token,
   write,
   deleteFile,
+  FindByQuery,
 };
