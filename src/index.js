@@ -1,5 +1,5 @@
 const express = require('express');
-const { readFile } = require('./talkerFunctions');
+const { readFile, token } = require('./talkerFunctions');
 
 const app = express();
 
@@ -22,7 +22,6 @@ app.get('/talker', async (_req, res) => {
   if (!data) {
     return res.status(200).json([]);
   }
-  console.log(data, 'data');
   return res.status(200).json(data);
 });
 
@@ -36,4 +35,16 @@ app.get('/talker/:id', async (req, res) => {
     });
   }
   return res.status(200).json(FoundUser);
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({
+      message: 'faltando email ou password',
+    });
+  }
+  return res.status(200).json({
+    token: token(16),
+  });
 });
